@@ -3,6 +3,7 @@ package com.mercadolibre.purchasecoupon.usecases;
 import com.google.inject.Inject;
 import com.mercadolibre.purchasecoupon.dtos.Item;
 import com.mercadolibre.purchasecoupon.dtos.response.CouponResponse;
+import com.mercadolibre.purchasecoupon.exceptions.GetCouponItemsCombinationException;
 import com.mercadolibre.purchasecoupon.repositories.ItemRepository;
 
 import java.math.BigDecimal;
@@ -10,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Given a list of items and an amount, get their prices and return the combination that maximizes the use of the amount
@@ -26,6 +30,9 @@ public class DefaultGetCouponItemsCombination implements GetCouponItemsCombinati
 
     @Override
     public CouponResponse apply(Model model) {
+        // Filter repeated item ids
+        List<String> itemIds = model.getItemIds().stream().distinct().toList();
+
         List<Item> items = getItems(model.getItemIds());
         BigDecimal couponAmount = model.getAmount();
 
@@ -66,12 +73,16 @@ public class DefaultGetCouponItemsCombination implements GetCouponItemsCombinati
             futures.add(future);
         });
 
-        return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
-                .thenApply(v ->
-                        futures.stream()
-                                .map(CompletableFuture::join)
-                                .toList())
-                .join();
+        try {
+            return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+                    .thenApply(v ->
+                            futures.stream()
+                                    .map(CompletableFuture::join)
+                                    .toList())
+                    .get(10, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new GetCouponItemsCombinationException(e.getMessage());
+        }
     }
 
     private CouponResponse getOptimalCouponItemsCombination(List<Item> affordableItems, BigDecimal couponAmount) {
