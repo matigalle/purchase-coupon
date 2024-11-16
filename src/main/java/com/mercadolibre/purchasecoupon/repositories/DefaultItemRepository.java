@@ -5,6 +5,8 @@ import com.mercadolibre.purchasecoupon.dtos.Item;
 import com.mercadolibre.purchasecoupon.exceptions.HttpClientException;
 import com.mercadolibre.purchasecoupon.exceptions.NotFoundException;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -51,7 +53,10 @@ public class DefaultItemRepository implements ItemRepository {
         })
         .join();
 
-        return itemOptional.orElseThrow();
+        Item item = itemOptional.orElseThrow();
+        BigDecimal price = item.price().setScale(2, RoundingMode.DOWN);
+
+        return new Item(item.id(), price);
     }
 
 }
