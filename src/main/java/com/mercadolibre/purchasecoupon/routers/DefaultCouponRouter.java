@@ -24,6 +24,7 @@ public class DefaultCouponRouter implements CouponRouter {
     public void handle(@NotNull Context ctx) {
         Gson gson = new Gson();
         CouponRequest couponRequest = gson.fromJson(ctx.body(), CouponRequest.class);
+        validateRequest(couponRequest);
 
         CouponResponse response = getCouponItemsCombination.apply(GetCouponItemsCombination.Model.builder()
                 .itemIds(couponRequest.itemIds())
