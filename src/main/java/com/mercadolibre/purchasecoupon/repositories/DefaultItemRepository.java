@@ -49,7 +49,7 @@ public class DefaultItemRepository implements ItemRepository {
                 throw new NotFoundException("Item id " + id + "not found");
             }
 
-            throw new HttpClientException("Error getting item id " + id + " from items API");
+            throw new HttpClientException("Error getting item id " + id + ". Status code: " + response.statusCode());
         })
         .join();
 
