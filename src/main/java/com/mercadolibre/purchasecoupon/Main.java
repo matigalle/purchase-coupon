@@ -12,6 +12,7 @@ import com.mercadolibre.purchasecoupon.injectors.RepositoryModule;
 import com.mercadolibre.purchasecoupon.injectors.RouterModule;
 import com.mercadolibre.purchasecoupon.injectors.UseCaseModule;
 import com.mercadolibre.purchasecoupon.routers.CouponRouter;
+import com.mercadolibre.purchasecoupon.routers.CouponStatsRouter;
 import io.javalin.Javalin;
 import io.javalin.http.ContentType;
 
@@ -35,6 +36,7 @@ public class Main {
                 new RepositoryModule());
 
         app.post("/coupon", injector.getInstance(CouponRouter.class));
+        app.post("/coupon/stats", injector.getInstance(CouponStatsRouter.class));
     }
 
     private static void addExceptionsHandling(Javalin app) {

@@ -6,6 +6,7 @@ import com.mercadolibre.purchasecoupon.dtos.request.CouponRequest;
 import com.mercadolibre.purchasecoupon.dtos.response.CouponResponse;
 import com.mercadolibre.purchasecoupon.exceptions.BadRequestException;
 import com.mercadolibre.purchasecoupon.usecases.GetCouponItemsCombination;
+import io.javalin.http.ContentType;
 import io.javalin.http.Context;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,6 +31,7 @@ public class DefaultCouponRouter implements CouponRouter {
                 .build());
 
         ctx.result(gson.toJson(response));
+        ctx.contentType(ContentType.APPLICATION_JSON);
     }
 
     private void validateRequest(CouponRequest couponRequest) {
