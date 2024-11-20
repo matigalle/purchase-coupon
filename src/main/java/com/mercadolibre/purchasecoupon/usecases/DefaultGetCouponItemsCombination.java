@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -81,7 +82,9 @@ public class DefaultGetCouponItemsCombination implements GetCouponItemsCombinati
                                     .toList())
                     .get(10, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new GetCouponItemsCombinationException(e.getMessage());
+            Optional<Throwable> cause = Optional.ofNullable(e.getCause());
+
+            throw new GetCouponItemsCombinationException(cause.orElse(e));
         }
     }
 
