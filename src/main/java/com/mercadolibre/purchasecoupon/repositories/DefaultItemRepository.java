@@ -2,8 +2,7 @@ package com.mercadolibre.purchasecoupon.repositories;
 
 import com.google.gson.Gson;
 import com.mercadolibre.purchasecoupon.dtos.Item;
-import com.mercadolibre.purchasecoupon.exceptions.HttpClientException;
-import com.mercadolibre.purchasecoupon.exceptions.NotFoundException;
+import com.mercadolibre.purchasecoupon.exceptions.ItemRepositoryException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -36,24 +35,22 @@ public class DefaultItemRepository implements ItemRepository {
         CompletableFuture<HttpResponse<String>> resultFuture =
                 httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
 
-        Optional<Item> itemOptional = resultFuture.thenApply(response -> {
+        Item item = resultFuture.thenApply(response -> {
             int statusCode = response.statusCode();
+            Optional<Item> itemOptional = Optional.ofNullable(new Gson().fromJson(response.body(), Item.class));
 
             if (statusCode == SC_OK) {
-                Item item = new Gson().fromJson(response.body(), Item.class);
+                if (itemOptional.isPresent()) {
+                    return itemOptional.get();
+                }
 
-                return Optional.ofNullable(item);
+                statusCode = SC_NOT_FOUND;
             }
 
-            if (statusCode == SC_NOT_FOUND) {
-                throw new NotFoundException("Item id " + id + "not found");
-            }
-
-            throw new HttpClientException("Error getting item id " + id + ". Status code: " + response.statusCode());
+            throw new ItemRepositoryException("Error getting item id " + id, statusCode);
         })
         .join();
 
-        Item item = itemOptional.orElseThrow();
         BigDecimal price = item.price().setScale(2, RoundingMode.DOWN);
 
         return new Item(item.id(), price);

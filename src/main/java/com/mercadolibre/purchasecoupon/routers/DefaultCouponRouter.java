@@ -9,8 +9,6 @@ import com.mercadolibre.purchasecoupon.usecases.GetCouponItemsCombination;
 import io.javalin.http.Context;
 import org.jetbrains.annotations.NotNull;
 
-import static java.util.Objects.isNull;
-
 public class DefaultCouponRouter implements CouponRouter {
 
     private final GetCouponItemsCombination getCouponItemsCombination;
@@ -35,7 +33,7 @@ public class DefaultCouponRouter implements CouponRouter {
     }
 
     private void validateRequest(CouponRequest couponRequest) {
-        if (isNull(couponRequest) || isNull(couponRequest.itemIds()) || isNull(couponRequest.amount())) {
+        if (couponRequest == null || couponRequest.itemIds() == null || couponRequest.amount() == null) {
             throw new BadRequestException("Item ids and amount can't be null");
         }
     }
