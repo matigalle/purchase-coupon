@@ -1,20 +1,9 @@
 # Challenge: Cupón de compra
 
-API REST que permite procesar una lista de ids de items favoritos, y un monto que representa un cupón de compra, para devolver los items que maximizan el total gastado con dicho cupón.
+API REST que permite procesar una lista de ids de items favoritos, y devolver los siguientes resultados a través de 2 servicios:
 
-Ejemplo:
-
-Asumiendo la siguiente lista y un cupón de $500.
-
-| Id   | Precio |
-|------|--------|
-| MLA1 | $100   |
-| MLA2 | $210   |
-| MLA3 | $260   |
-| MLA4 | $80    |
-| MLA5 | $90    |
-
-La respuesta será: ["MLA1", "MLA2", "MLA4", "MLA5"].
+1. Dado un monto que representa un cupón de compra, devuelve los items que maximizan el total gastado con dicho cupón
+2. Devuelve el top 5 de items mas repetidos y su frecuencia
 
 Para obtener el precio de un item se consulta a la API de items y se lee el valor "price":
 
@@ -24,11 +13,11 @@ Descripción completa: [Challenge Cupón.pdf](https://github.com/user-attachmen
 
 ## Servicios
 
-**POST /coupon**
+1. **POST /coupon**
 
 Ejemplo:
 
-Request body
+Request
 ```json
 {
   "item_ids": ["MLA1", "MLA2", "MLA3", "MLA4", "MLA5"],
@@ -44,7 +33,31 @@ Response
 }
 ```
 
-## Instrucciones
+2. **POST /coupon/stats**
+
+Ejemplo:
+
+Request
+```json
+{
+  "item_ids": ["MLA1", "MLA1", "MLA2", "MLA2", "MLA3", "MLA3", "MLA4", "MLA4", "MLA5", "MLA5", "MLA6"]
+}
+```
+
+Response
+```json
+{
+  "top_items": {
+    "MLA1": 2,
+    "MLA2": 2,
+    "MLA3": 2,
+    "MLA4": 2,
+    "MLA5": 2
+  }
+}
+```
+
+## Instrucciones para el uso de la API
 
 Es necesario tener JDK 17 instalado.
 
@@ -53,7 +66,7 @@ Ejecutar localmente:
 ./gradlew run
 ```
 
-La API quedará disponible en ```http://localhost:8080/```.
+La API quedará disponible en ```http://localhost:8080```.
 
 Ejecutar los tests:
 ```
