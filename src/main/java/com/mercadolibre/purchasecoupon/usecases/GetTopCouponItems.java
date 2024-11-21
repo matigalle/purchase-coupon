@@ -1,20 +1,19 @@
 package com.mercadolibre.purchasecoupon.usecases;
 
-import com.mercadolibre.purchasecoupon.dtos.response.CouponResponse;
+import com.mercadolibre.purchasecoupon.dtos.response.CouponStatsResponse;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.Function;
 
-public interface GetCouponItemsCombination extends Function<GetCouponItemsCombination.Model, CouponResponse> {
+public interface GetTopCouponItems extends Function<GetTopCouponItems.Model, CouponStatsResponse> {
 
     @Builder
     @Getter
     class Model {
         private final List<String> itemIds;
-        private final BigDecimal amount;
+        private final int top;
     }
 
 }
