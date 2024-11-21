@@ -5,18 +5,18 @@ import com.google.inject.Inject;
 import com.mercadolibre.purchasecoupon.dtos.request.CouponStatsRequest;
 import com.mercadolibre.purchasecoupon.dtos.response.CouponStatsResponse;
 import com.mercadolibre.purchasecoupon.exceptions.BadRequestException;
-import com.mercadolibre.purchasecoupon.usecases.GetTopFiveCouponItems;
+import com.mercadolibre.purchasecoupon.usecases.GetTopCouponItems;
 import io.javalin.http.ContentType;
 import io.javalin.http.Context;
 import org.jetbrains.annotations.NotNull;
 
 public class DefaultCouponStatsRouter implements CouponStatsRouter {
 
-    private final GetTopFiveCouponItems getTopFiveCouponItems;
+    private final GetTopCouponItems getTopCouponItems;
 
     @Inject
-    public DefaultCouponStatsRouter(GetTopFiveCouponItems getTopFiveCouponItems) {
-        this.getTopFiveCouponItems = getTopFiveCouponItems;
+    public DefaultCouponStatsRouter(GetTopCouponItems getTopCouponItems) {
+        this.getTopCouponItems = getTopCouponItems;
     }
 
     @Override
@@ -25,7 +25,10 @@ public class DefaultCouponStatsRouter implements CouponStatsRouter {
         CouponStatsRequest couponStatsRequest = gson.fromJson(ctx.body(), CouponStatsRequest.class);
         validateRequest(couponStatsRequest);
 
-        CouponStatsResponse response = getTopFiveCouponItems.apply(couponStatsRequest.itemIds());
+        CouponStatsResponse response = getTopCouponItems.apply(GetTopCouponItems.Model.builder()
+                .itemIds(couponStatsRequest.itemIds())
+                .top(5)
+                .build());
 
         ctx.result(gson.toJson(response));
         ctx.contentType(ContentType.APPLICATION_JSON);
