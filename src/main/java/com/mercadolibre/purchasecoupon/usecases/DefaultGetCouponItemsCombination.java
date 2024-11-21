@@ -34,7 +34,7 @@ public class DefaultGetCouponItemsCombination implements GetCouponItemsCombinati
         // Filter repeated item ids
         List<String> itemIds = model.getItemIds().stream().distinct().toList();
 
-        List<Item> items = getItems(model.getItemIds());
+        List<Item> items = getItems(itemIds);
         BigDecimal couponAmount = model.getAmount();
 
         // Filter items with a price greater than coupon amount
