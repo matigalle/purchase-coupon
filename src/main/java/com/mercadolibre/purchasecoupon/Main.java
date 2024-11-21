@@ -8,6 +8,7 @@ import com.google.inject.Injector;
 import com.mercadolibre.purchasecoupon.exceptions.BadRequestException;
 import com.mercadolibre.purchasecoupon.exceptions.GetCouponItemsCombinationException;
 import com.mercadolibre.purchasecoupon.exceptions.ItemRepositoryException;
+import com.mercadolibre.purchasecoupon.injectors.GeneralModule;
 import com.mercadolibre.purchasecoupon.injectors.RepositoryModule;
 import com.mercadolibre.purchasecoupon.injectors.RouterModule;
 import com.mercadolibre.purchasecoupon.injectors.UseCaseModule;
@@ -33,7 +34,8 @@ public class Main {
         Injector injector = Guice.createInjector(
                 new RouterModule(),
                 new UseCaseModule(),
-                new RepositoryModule());
+                new RepositoryModule(),
+                new GeneralModule());
 
         app.post("/coupon", injector.getInstance(CouponRouter.class));
         app.post("/coupon/stats", injector.getInstance(CouponStatsRouter.class));

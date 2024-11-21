@@ -1,6 +1,7 @@
 package com.mercadolibre.purchasecoupon.repositories;
 
 import com.google.gson.Gson;
+import com.google.inject.Inject;
 import com.mercadolibre.purchasecoupon.dtos.Item;
 import com.mercadolibre.purchasecoupon.exceptions.ItemRepositoryException;
 
@@ -10,7 +11,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -19,14 +19,16 @@ import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 
 public class DefaultItemRepository implements ItemRepository {
 
-    private static final String BASE_URL = "https://api.mercadolibre.com/items/";
+    private final HttpClient httpClient;
+    public static final String BASE_URL = "https://api.mercadolibre.com/items/";
+
+    @Inject
+    public DefaultItemRepository(HttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
 
     @Override
     public Item getItem(String id) {
-        HttpClient httpClient = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(2))
-                .build();
-
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + id))
                 .GET()
@@ -37,9 +39,10 @@ public class DefaultItemRepository implements ItemRepository {
 
         Item item = resultFuture.thenApply(response -> {
             int statusCode = response.statusCode();
-            Optional<Item> itemOptional = Optional.ofNullable(new Gson().fromJson(response.body(), Item.class));
 
             if (statusCode == SC_OK) {
+                Optional<Item> itemOptional = Optional.ofNullable(new Gson().fromJson(response.body(), Item.class));
+
                 if (itemOptional.isPresent()) {
                     return itemOptional.get();
                 }
