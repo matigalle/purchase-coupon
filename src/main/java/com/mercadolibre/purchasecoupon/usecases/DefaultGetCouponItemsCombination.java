@@ -17,8 +17,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Given a list of items and an amount, get their prices and return the combination that maximizes the use of the amount
- * and the total price for this combination.
+ * Given a list of items and an amount, gets their prices and return the combination that maximizes the use of the
+ * amount with the total price for that combination.
  */
 public class DefaultGetCouponItemsCombination implements GetCouponItemsCombination {
 
@@ -61,10 +61,10 @@ public class DefaultGetCouponItemsCombination implements GetCouponItemsCombinati
     }
 
     /**
-     * Perform asynchronous requests to items API for each item id to get their prices.
+     * For each item id, perform asynchronous calls to ItemRepository to get items prices.
      *
-     * @param itemIds item ids
-     * @return a list of type Item
+     * @param itemIds list of item ids
+     * @return list of type Item
      */
     private List<Item> getItems(List<String> itemIds) {
         List<CompletableFuture<Item>> futures = new ArrayList<>();
@@ -88,12 +88,20 @@ public class DefaultGetCouponItemsCombination implements GetCouponItemsCombinati
         }
     }
 
+    /**
+     * Sum max prices (first in the list) with min prices (last in the list) to determine the max posible sum for each
+     * index, comparing and saving the max price in each iteration.
+     * When a sum is equal to coupon amount, returns that combination.
+     *
+     * @param affordableItems list of items ordered by price (descending)
+     * @param couponAmount the coupon amount
+     * @return a CouponResponse object
+     */
     private CouponResponse getOptimalCouponItemsCombination(List<Item> affordableItems, BigDecimal couponAmount) {
         BigDecimal total = BigDecimal.ZERO;
         List<String> itemIdsCombination = new ArrayList<>();
         int lastIndex = affordableItems.size() - 1;
 
-        // Compare max values with min values to determine the max posible sum for each index
         for (int i = 0; i < lastIndex; i++) {
             Item leftItem = affordableItems.get(i);
             BigDecimal max = leftItem.price();
@@ -113,9 +121,7 @@ public class DefaultGetCouponItemsCombination implements GetCouponItemsCombinati
 
                     if (max.equals(couponAmount)) {
                         // Variable max has the optimal sum
-                        i = lastIndex;
-
-                        break;
+                        return new CouponResponse(combinations, max);
                     }
                 }
             }
