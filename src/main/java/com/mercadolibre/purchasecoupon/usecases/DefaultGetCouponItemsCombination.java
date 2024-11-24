@@ -17,8 +17,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Given a list of items and an amount, gets their prices and return the combination that maximizes the use of the
- * amount with the total price for that combination.
+ * Given an amount and a list of items, gets their prices and return the combination that maximizes the use of the
+ * amount and the total price for that combination.
  */
 public class DefaultGetCouponItemsCombination implements GetCouponItemsCombination {
 
@@ -89,9 +89,10 @@ public class DefaultGetCouponItemsCombination implements GetCouponItemsCombinati
     }
 
     /**
-     * Sum max prices (first in the list) with min prices (last in the list) to determine the max posible sum for each
-     * index, comparing and saving the max price in each iteration.
-     * When a sum is equal to coupon amount, returns that combination.
+     * In each iteration, sums price in index i with prices in index j, starting from the end of the list (with
+     * lower price values), until reaching the max posible sum < or = than couponAmount. Then determines the max
+     * between the values obtained in each iteration and returns its combination.
+     * If a sum is equal to couponAmount, returns that combination.
      *
      * @param affordableItems list of items ordered by price (descending)
      * @param couponAmount the coupon amount
