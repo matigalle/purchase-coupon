@@ -89,7 +89,7 @@ public class DefaultGetCouponItemsCombination implements GetCouponItemsCombinati
     }
 
     /**
-     * In each iteration, sums price in index i with prices in index j, starting from the end of the list (with
+     * In each iteration, sums price in index i with prices in index j (from the end of the list, with
      * lower price values), until reaching the max posible sum < or = than couponAmount. Then determines the max
      * between the values obtained in each iteration and returns its combination.
      * If a sum is equal to couponAmount, returns that combination.
