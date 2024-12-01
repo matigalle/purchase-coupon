@@ -2,8 +2,10 @@ package com.mercadolibre.purchasecoupon.repositories;
 
 import com.mercadolibre.purchasecoupon.dtos.Item;
 
+import java.util.List;
+
 public interface ItemRepository {
 
-    Item getItem(String id);
+    List<Item> getItems(List<String> ids);
 
 }

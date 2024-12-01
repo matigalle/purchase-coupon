@@ -6,8 +6,6 @@ import com.google.gson.JsonSyntaxException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.mercadolibre.purchasecoupon.exceptions.BadRequestException;
-import com.mercadolibre.purchasecoupon.exceptions.GetCouponItemsCombinationException;
-import com.mercadolibre.purchasecoupon.exceptions.ItemRepositoryException;
 import com.mercadolibre.purchasecoupon.injectors.GeneralModule;
 import com.mercadolibre.purchasecoupon.injectors.RepositoryModule;
 import com.mercadolibre.purchasecoupon.injectors.RouterModule;
@@ -42,13 +40,9 @@ public class Main {
     }
 
     private static void addExceptionsHandling(Javalin app) {
-        app.exception(Exception.class, (exception, ctx) -> {
-            if (exception instanceof GetCouponItemsCombinationException e && e.getCause() instanceof Exception cause) {
-                exception = cause;
-            }
-
+        app.exception(RuntimeException.class, (exception, ctx) -> {
             JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("error", exception.toString());
+            jsonObject.addProperty("error", exception.getMessage());
 
             ctx.result(new Gson().toJson(jsonObject));
             ctx.contentType(ContentType.APPLICATION_JSON);
@@ -59,8 +53,6 @@ public class Main {
     private static int getStatusCode(Exception e) {
         if (e instanceof BadRequestException || e instanceof JsonSyntaxException) {
             return SC_BAD_REQUEST;
-        } else if (e instanceof ItemRepositoryException itemRepositoryException) {
-            return itemRepositoryException.getStatusCode();
         }
 
         return SC_INTERNAL_SERVER_ERROR;

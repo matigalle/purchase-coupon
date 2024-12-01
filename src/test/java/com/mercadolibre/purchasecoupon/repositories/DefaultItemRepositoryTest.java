@@ -2,67 +2,71 @@ package com.mercadolibre.purchasecoupon.repositories;
 
 import com.google.gson.Gson;
 import com.mercadolibre.purchasecoupon.dtos.Item;
-import org.junit.jupiter.api.BeforeAll;
+import com.mercadolibre.purchasecoupon.exceptions.ItemRepositoryException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
+import java.util.List;
 
 import static com.mercadolibre.purchasecoupon.repositories.DefaultItemRepository.BASE_URL;
-import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class DefaultItemRepositoryTest {
 
     private static final String TEST_ITEM_ID = "MLA1";
-    private static HttpResponse<String> response;
-    private static DefaultItemRepository defaultItemRepository;
 
-    @BeforeAll
-    static void setUp() {
-        HttpClient httpClientMock = mock(HttpClient.class);
-        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(BASE_URL + TEST_ITEM_ID)).GET().build();
+    private HttpClient httpClientMock;
+    private HttpRequest request;
+    private HttpResponse<String> response;
+    private DefaultItemRepository defaultItemRepository;
+
+    @BeforeEach
+    void setUp() {
+        httpClientMock = mock(HttpClient.class);
+        request = HttpRequest.newBuilder().uri(URI.create(BASE_URL + TEST_ITEM_ID)).GET().build();
         response = mock(HttpResponse.class);
-        CompletableFuture<HttpResponse<String>> completableFuture = CompletableFuture.completedFuture(response);
-
-        Mockito.when(httpClientMock.sendAsync(request, HttpResponse.BodyHandlers.ofString()))
-                .thenReturn(completableFuture);
 
         defaultItemRepository = new DefaultItemRepository(httpClientMock);
     }
 
     @Test
-    void get_item_ok() {
-        Mockito.when(response.statusCode()).thenReturn(SC_OK);
-        Mockito.when(response.body()).thenReturn(getTestItemJson());
+    void get_items_ok() throws IOException, InterruptedException {
+        when(httpClientMock.send(request, HttpResponse.BodyHandlers.ofString())).thenReturn(response);
+        when(response.statusCode()).thenReturn(SC_OK);
+        when(response.body()).thenReturn(getTestItemJson());
 
-        Item item = defaultItemRepository.getItem(TEST_ITEM_ID);
+        List<Item> items = defaultItemRepository.getItems(List.of(TEST_ITEM_ID));
 
-        assertNotNull(item);
-        assertEquals(TEST_ITEM_ID, item.id());
+        assertNotNull(items);
+        assertEquals(TEST_ITEM_ID, items.get(0).id());
     }
 
     @Test
-    void get_item_null() {
-        Mockito.when(response.statusCode()).thenReturn(SC_OK);
-        Mockito.when(response.body()).thenReturn(null);
+    void item_not_found() throws IOException, InterruptedException {
+        when(httpClientMock.send(request, HttpResponse.BodyHandlers.ofString())).thenReturn(response);
+        when(response.statusCode()).thenReturn(SC_NOT_FOUND);
 
-        assertThrows(CompletionException.class, () -> defaultItemRepository.getItem(TEST_ITEM_ID));
+        List<Item> items = defaultItemRepository.getItems(List.of(TEST_ITEM_ID));
+
+        assertNotNull(items);
+        assertTrue(items.isEmpty());
     }
 
     @Test
-    void get_item_error() {
-        Mockito.when(response.statusCode()).thenReturn(SC_INTERNAL_SERVER_ERROR);
+    void client_error() throws IOException, InterruptedException {
+        when(httpClientMock.send(request, HttpResponse.BodyHandlers.ofString())).thenThrow(IOException.class);
 
-        assertThrows(CompletionException.class, () -> defaultItemRepository.getItem(TEST_ITEM_ID));
+        assertThrows(ItemRepositoryException.class, () -> defaultItemRepository.getItems(List.of(TEST_ITEM_ID)));
     }
 
     private String getTestItemJson() {
