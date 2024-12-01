@@ -3,23 +3,24 @@ package com.mercadolibre.purchasecoupon.usecases;
 import com.mercadolibre.purchasecoupon.dtos.Item;
 import com.mercadolibre.purchasecoupon.dtos.response.CouponResponse;
 import com.mercadolibre.purchasecoupon.repositories.ItemRepository;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class DefaultGetCouponItemsCombinationTest {
 
-    private static ItemRepository itemRepository;
-    private static DefaultGetCouponItemsCombination defaultGetCouponItemsCombination;
+    private ItemRepository itemRepository;
+    private DefaultGetCouponItemsCombination defaultGetCouponItemsCombination;
 
-    @BeforeAll
-    static void setUp() {
+    @BeforeEach
+    void setUp() {
         itemRepository = mock(ItemRepository.class);
 
         defaultGetCouponItemsCombination = new DefaultGetCouponItemsCombination(itemRepository);
@@ -29,7 +30,7 @@ class DefaultGetCouponItemsCombinationTest {
     void combination_with_all_prices_less_than_coupon_amount() {
         List<Item> items = getTestItems();
 
-        items.forEach(item -> when(itemRepository.getItem(item.id())).thenReturn(item));
+        when(itemRepository.getItems(any())).thenReturn(items);
 
         GetCouponItemsCombination.Model model = GetCouponItemsCombination.Model.builder()
                 .itemIds(items.stream().map(Item::id).toList())
@@ -48,7 +49,7 @@ class DefaultGetCouponItemsCombinationTest {
     void combination_with_all_prices_greater_than_coupon_amount() {
         List<Item> items = getTestItems();
 
-        items.forEach(item -> when(itemRepository.getItem(item.id())).thenReturn(item));
+        when(itemRepository.getItems(any())).thenReturn(items);
 
         GetCouponItemsCombination.Model model = GetCouponItemsCombination.Model.builder()
                 .itemIds(items.stream().map(Item::id).toList())
@@ -66,7 +67,7 @@ class DefaultGetCouponItemsCombinationTest {
     void combination_with_only_one_price_less_than_coupon_amount() {
         List<Item> items = getTestItems();
 
-        items.forEach(item -> when(itemRepository.getItem(item.id())).thenReturn(item));
+        when(itemRepository.getItems(any())).thenReturn(items);
 
         GetCouponItemsCombination.Model model = GetCouponItemsCombination.Model.builder()
                 .itemIds(items.stream().map(Item::id).toList())
@@ -75,7 +76,7 @@ class DefaultGetCouponItemsCombinationTest {
 
         CouponResponse couponResponse = defaultGetCouponItemsCombination.apply(model);
 
-        Item affordableItem = items.get(3);
+        Item affordableItem = items.get(3); // The only item with price less than amount
 
         assertNotNull(couponResponse);
         assertEquals(1, couponResponse.itemIds().size());
