@@ -25,7 +25,7 @@ public class Main {
 
         addRoutes(app);
         addExceptionsHandling(app);
-        app.start(80);
+        app.start(8080);
     }
 
     private static void addRoutes(Javalin app) {
