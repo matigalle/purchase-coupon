@@ -47,6 +47,7 @@ public class RedisCacheRepository implements CacheRepository {
         return RedisURI.Builder
                 .redis("redis-cache-ndoafj.serverless.sae1.cache.amazonaws.com", 6379)
                 .withTimeout(Duration.ofSeconds(10))
+                .withSsl(true)
                 .build();
     }
 
