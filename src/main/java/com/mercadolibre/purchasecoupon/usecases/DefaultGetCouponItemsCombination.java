@@ -3,12 +3,14 @@ package com.mercadolibre.purchasecoupon.usecases;
 import com.google.inject.Inject;
 import com.mercadolibre.purchasecoupon.dtos.Item;
 import com.mercadolibre.purchasecoupon.dtos.response.CouponResponse;
+import com.mercadolibre.purchasecoupon.repositories.CacheRepository;
 import com.mercadolibre.purchasecoupon.repositories.ItemRepository;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Given an amount and a list of items, gets their prices and return the combination that maximizes the use of the
@@ -17,10 +19,12 @@ import java.util.List;
 public class DefaultGetCouponItemsCombination implements GetCouponItemsCombination {
 
     private final ItemRepository itemRepository;
+    private final CacheRepository cacheRepository;
 
     @Inject
-    public DefaultGetCouponItemsCombination(ItemRepository itemRepository) {
+    public DefaultGetCouponItemsCombination(ItemRepository itemRepository, CacheRepository cacheRepository) {
         this.itemRepository = itemRepository;
+        this.cacheRepository = cacheRepository;
     }
 
     @Override
@@ -29,6 +33,7 @@ public class DefaultGetCouponItemsCombination implements GetCouponItemsCombinati
         List<String> itemIds = model.getItemIds().stream().distinct().toList();
 
         List<Item> items = itemRepository.getItems(itemIds);
+        CompletableFuture.runAsync(() -> cacheRepository.incrementCounters(itemIds));
 
         BigDecimal couponAmount = model.getAmount();
 

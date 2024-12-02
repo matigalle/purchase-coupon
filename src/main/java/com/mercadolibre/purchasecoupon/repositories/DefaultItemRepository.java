@@ -52,7 +52,7 @@ public class DefaultItemRepository implements ItemRepository {
                         .get(10, TimeUnit.SECONDS);
 
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new ItemRepositoryException(e.getMessage());
+            throw new ItemRepositoryException(e.toString());
         }
     }
 

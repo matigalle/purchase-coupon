@@ -15,8 +15,7 @@ import com.mercadolibre.purchasecoupon.routers.CouponStatsRouter;
 import io.javalin.Javalin;
 import io.javalin.http.ContentType;
 
-import static jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
-import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static jakarta.servlet.http.HttpServletResponse.*;
 
 public class Main {
 
@@ -35,6 +34,7 @@ public class Main {
                 new RepositoryModule(),
                 new GeneralModule());
 
+        app.get("/", ctx -> ctx.status(SC_OK));
         app.post("/coupon", injector.getInstance(CouponRouter.class));
         app.post("/coupon/stats", injector.getInstance(CouponStatsRouter.class));
     }

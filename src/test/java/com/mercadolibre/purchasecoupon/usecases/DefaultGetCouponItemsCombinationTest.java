@@ -2,6 +2,7 @@ package com.mercadolibre.purchasecoupon.usecases;
 
 import com.mercadolibre.purchasecoupon.dtos.Item;
 import com.mercadolibre.purchasecoupon.dtos.response.CouponResponse;
+import com.mercadolibre.purchasecoupon.repositories.CacheRepository;
 import com.mercadolibre.purchasecoupon.repositories.ItemRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,8 +23,9 @@ class DefaultGetCouponItemsCombinationTest {
     @BeforeEach
     void setUp() {
         itemRepository = mock(ItemRepository.class);
+        CacheRepository cacheRepository = mock(CacheRepository.class);
 
-        defaultGetCouponItemsCombination = new DefaultGetCouponItemsCombination(itemRepository);
+        defaultGetCouponItemsCombination = new DefaultGetCouponItemsCombination(itemRepository, cacheRepository);
     }
 
     @Test
