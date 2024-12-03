@@ -45,9 +45,9 @@ public class RedisCacheRepository implements CacheRepository {
 
     private RedisURI getRedisURI() {
         return RedisURI.Builder
-                .redis("redis-cache-ndoafj.serverless.sae1.cache.amazonaws.com", 6379)
+                .redis("ec2-56-124-1-128.sa-east-1.compute.amazonaws.com", 6379)
+                .withPassword("purchase-coupon-cache".toCharArray())
                 .withTimeout(Duration.ofSeconds(10))
-                .withSsl(true)
                 .build();
     }
 
