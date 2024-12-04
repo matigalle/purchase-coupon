@@ -1,7 +1,8 @@
-package com.mercadolibre.purchasecoupon.usecases;
+package com.mercadolibre.purchasecoupon.usecases.impl;
 
 import com.google.inject.Inject;
 import com.mercadolibre.purchasecoupon.repositories.CacheRepository;
+import com.mercadolibre.purchasecoupon.usecases.GetTopCouponItems;
 
 import java.util.Comparator;
 import java.util.List;

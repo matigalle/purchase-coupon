@@ -1,10 +1,11 @@
-package com.mercadolibre.purchasecoupon.usecases;
+package com.mercadolibre.purchasecoupon.usecases.impl;
 
 import com.google.inject.Inject;
 import com.mercadolibre.purchasecoupon.dtos.Item;
 import com.mercadolibre.purchasecoupon.dtos.response.CouponResponse;
 import com.mercadolibre.purchasecoupon.repositories.CacheRepository;
 import com.mercadolibre.purchasecoupon.repositories.ItemRepository;
+import com.mercadolibre.purchasecoupon.usecases.GetCouponItemsCombination;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

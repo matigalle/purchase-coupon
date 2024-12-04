@@ -1,9 +1,10 @@
-package com.mercadolibre.purchasecoupon.repositories;
+package com.mercadolibre.purchasecoupon.repositories.impl;
 
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.mercadolibre.purchasecoupon.dtos.Item;
 import com.mercadolibre.purchasecoupon.exceptions.ItemRepositoryException;
+import com.mercadolibre.purchasecoupon.repositories.ItemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

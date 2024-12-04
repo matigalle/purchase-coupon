@@ -1,8 +1,9 @@
-package com.mercadolibre.purchasecoupon.repositories;
+package com.mercadolibre.purchasecoupon.repositories.impl;
 
 import com.google.gson.Gson;
 import com.mercadolibre.purchasecoupon.dtos.Item;
 import com.mercadolibre.purchasecoupon.exceptions.ItemRepositoryException;
+import com.mercadolibre.purchasecoupon.repositories.impl.DefaultItemRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +15,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
-import static com.mercadolibre.purchasecoupon.repositories.DefaultItemRepository.BASE_URL;
+import static com.mercadolibre.purchasecoupon.repositories.impl.DefaultItemRepository.BASE_URL;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 import static org.junit.jupiter.api.Assertions.*;

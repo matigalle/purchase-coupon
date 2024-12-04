@@ -1,6 +1,7 @@
-package com.mercadolibre.purchasecoupon.usecases;
+package com.mercadolibre.purchasecoupon.usecases.impl;
 
 import com.mercadolibre.purchasecoupon.repositories.CacheRepository;
+import com.mercadolibre.purchasecoupon.usecases.impl.DefaultGetTopCouponItems;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

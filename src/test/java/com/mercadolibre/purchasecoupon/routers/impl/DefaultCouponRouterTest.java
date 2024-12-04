@@ -1,7 +1,8 @@
-package com.mercadolibre.purchasecoupon.routers;
+package com.mercadolibre.purchasecoupon.routers.impl;
 
 import com.mercadolibre.purchasecoupon.dtos.response.CouponResponse;
 import com.mercadolibre.purchasecoupon.exceptions.BadRequestException;
+import com.mercadolibre.purchasecoupon.routers.impl.DefaultCouponRouter;
 import com.mercadolibre.purchasecoupon.usecases.GetCouponItemsCombination;
 import io.javalin.http.Context;
 import org.junit.jupiter.api.BeforeAll;

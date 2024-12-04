@@ -1,5 +1,6 @@
-package com.mercadolibre.purchasecoupon.routers;
+package com.mercadolibre.purchasecoupon.routers.impl;
 
+import com.mercadolibre.purchasecoupon.routers.impl.DefaultCouponStatsRouter;
 import com.mercadolibre.purchasecoupon.usecases.GetTopCouponItems;
 import io.javalin.http.Context;
 import org.junit.jupiter.api.BeforeEach;

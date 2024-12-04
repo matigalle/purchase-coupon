@@ -1,9 +1,11 @@
-package com.mercadolibre.purchasecoupon.usecases;
+package com.mercadolibre.purchasecoupon.usecases.impl;
 
 import com.mercadolibre.purchasecoupon.dtos.Item;
 import com.mercadolibre.purchasecoupon.dtos.response.CouponResponse;
 import com.mercadolibre.purchasecoupon.repositories.CacheRepository;
 import com.mercadolibre.purchasecoupon.repositories.ItemRepository;
+import com.mercadolibre.purchasecoupon.usecases.GetCouponItemsCombination;
+import com.mercadolibre.purchasecoupon.usecases.impl.DefaultGetCouponItemsCombination;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,9 +37,9 @@ class DefaultGetCouponItemsCombinationTest {
         when(itemRepository.getItems(any())).thenReturn(items);
 
         GetCouponItemsCombination.Model model = GetCouponItemsCombination.Model.builder()
-                .itemIds(items.stream().map(Item::id).toList())
-                .amount(BigDecimal.valueOf(500))
-                .build();
+                                                                               .itemIds(items.stream().map(Item::id).toList())
+                                                                               .amount(BigDecimal.valueOf(500))
+                                                                               .build();
 
         CouponResponse couponResponse = defaultGetCouponItemsCombination.apply(model);
 

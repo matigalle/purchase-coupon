@@ -1,7 +1,8 @@
-package com.mercadolibre.purchasecoupon.routers;
+package com.mercadolibre.purchasecoupon.routers.impl;
 
 import com.google.gson.Gson;
 import com.google.inject.Inject;
+import com.mercadolibre.purchasecoupon.routers.CouponStatsRouter;
 import com.mercadolibre.purchasecoupon.usecases.GetTopCouponItems;
 import io.javalin.http.ContentType;
 import io.javalin.http.Context;
