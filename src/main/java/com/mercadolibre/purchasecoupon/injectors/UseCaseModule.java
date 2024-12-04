@@ -1,8 +1,8 @@
 package com.mercadolibre.purchasecoupon.injectors;
 
 import com.google.inject.AbstractModule;
-import com.mercadolibre.purchasecoupon.usecases.DefaultGetCouponItemsCombination;
-import com.mercadolibre.purchasecoupon.usecases.DefaultGetTopCouponItems;
+import com.mercadolibre.purchasecoupon.usecases.impl.DefaultGetCouponItemsCombination;
+import com.mercadolibre.purchasecoupon.usecases.impl.DefaultGetTopCouponItems;
 import com.mercadolibre.purchasecoupon.usecases.GetCouponItemsCombination;
 import com.mercadolibre.purchasecoupon.usecases.GetTopCouponItems;
 

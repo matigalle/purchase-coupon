@@ -1,10 +1,11 @@
-package com.mercadolibre.purchasecoupon.routers;
+package com.mercadolibre.purchasecoupon.routers.impl;
 
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.mercadolibre.purchasecoupon.dtos.request.CouponRequest;
 import com.mercadolibre.purchasecoupon.dtos.response.CouponResponse;
 import com.mercadolibre.purchasecoupon.exceptions.BadRequestException;
+import com.mercadolibre.purchasecoupon.routers.CouponRouter;
 import com.mercadolibre.purchasecoupon.usecases.GetCouponItemsCombination;
 import io.javalin.http.ContentType;
 import io.javalin.http.Context;

@@ -1,5 +1,6 @@
-package com.mercadolibre.purchasecoupon.repositories;
+package com.mercadolibre.purchasecoupon.repositories.impl;
 
+import com.mercadolibre.purchasecoupon.repositories.CacheRepository;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;

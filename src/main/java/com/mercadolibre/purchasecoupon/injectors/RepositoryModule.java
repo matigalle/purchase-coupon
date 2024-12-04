@@ -2,9 +2,9 @@ package com.mercadolibre.purchasecoupon.injectors;
 
 import com.google.inject.AbstractModule;
 import com.mercadolibre.purchasecoupon.repositories.CacheRepository;
-import com.mercadolibre.purchasecoupon.repositories.DefaultItemRepository;
+import com.mercadolibre.purchasecoupon.repositories.impl.DefaultItemRepository;
 import com.mercadolibre.purchasecoupon.repositories.ItemRepository;
-import com.mercadolibre.purchasecoupon.repositories.RedisCacheRepository;
+import com.mercadolibre.purchasecoupon.repositories.impl.RedisCacheRepository;
 
 public class RepositoryModule extends AbstractModule {
 
