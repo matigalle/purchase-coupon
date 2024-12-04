@@ -1,5 +1,6 @@
 package com.mercadolibre.purchasecoupon.repositories.impl;
 
+import com.mercadolibre.purchasecoupon.exceptions.CacheRepositoryException;
 import com.mercadolibre.purchasecoupon.repositories.CacheRepository;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
@@ -60,7 +61,7 @@ public class RedisCacheRepository implements CacheRepository {
             log.error(e.toString());
             client.shutdown();
 
-            throw e;
+            throw new CacheRepositoryException("Unable to connect to the database");
         }
 
         return connection;
