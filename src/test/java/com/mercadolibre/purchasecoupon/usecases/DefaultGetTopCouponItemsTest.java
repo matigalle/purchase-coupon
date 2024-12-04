@@ -1,55 +1,64 @@
 package com.mercadolibre.purchasecoupon.usecases;
 
-import com.mercadolibre.purchasecoupon.dtos.response.CouponStatsResponse;
-import org.junit.jupiter.api.BeforeAll;
+import com.mercadolibre.purchasecoupon.repositories.CacheRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class DefaultGetTopCouponItemsTest {
 
-    private static DefaultGetTopCouponItems defaultGetTopCouponItems;
+    private CacheRepository cacheRepository;
+    private DefaultGetTopCouponItems defaultGetTopCouponItems;
 
-    @BeforeAll
-    static void setUp() {
-        defaultGetTopCouponItems = new DefaultGetTopCouponItems();
+    @BeforeEach
+    void setUp() {
+        cacheRepository = mock(CacheRepository.class);
+
+        defaultGetTopCouponItems = new DefaultGetTopCouponItems(cacheRepository);
     }
 
     @Test
-    void five_items_repeated_twice() {
-        GetTopCouponItems.Model model = GetTopCouponItems.Model.builder()
-                .itemIds(getTestItemIds())
-                .top(5)
-                .build();
+    void filter_five_top_items() {
+        Map<String, String> itemsFrequency = getTestItemsFrequency();
+        when(cacheRepository.getItemsFrequency()).thenReturn(itemsFrequency);
+        List<Map<String, Long>> response = defaultGetTopCouponItems.get();
 
-        CouponStatsResponse couponStatsResponse = defaultGetTopCouponItems.apply(model);
+        List<Map<String, Long>> expected = new ArrayList<>();
+        expected.add(Map.of("MLA6", 6L));
+        expected.add(Map.of("MLA5", 5L));
+        expected.add(Map.of("MLA4", 4L));
+        expected.add(Map.of("MLA3", 3L));
+        expected.add(Map.of("MLA2", 2L));
 
-        Map<String, Integer> expected = Map.of("MLA1", 2, "MLA2", 2, "MLA3", 2, "MLA4", 2, "MLA5", 2);
-
-        assertNotNull(couponStatsResponse);
-        assertEquals(5, couponStatsResponse.topItems().size());
-        assertEquals(expected, couponStatsResponse.topItems());
+        assertNotNull(response);
+        assertEquals(5, response.size());
+        assertEquals(expected, response);
     }
 
     @Test
-    void empty_items() {
-        GetTopCouponItems.Model model = GetTopCouponItems.Model.builder()
-                .itemIds(Collections.emptyList())
-                .top(5)
-                .build();
+    void no_items_saved() {
+        when(cacheRepository.getItemsFrequency()).thenReturn(new HashMap<>());
+        List<Map<String, Long>> response = defaultGetTopCouponItems.get();
 
-        CouponStatsResponse couponStatsResponse = defaultGetTopCouponItems.apply(model);
-
-        assertNotNull(couponStatsResponse);
-        assertTrue(couponStatsResponse.topItems().isEmpty());
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
     }
 
-    private List<String> getTestItemIds() {
-        return List.of("MLA1", "MLA1", "MLA2", "MLA2", "MLA3", "MLA3", "MLA4", "MLA4", "MLA5", "MLA5", "MLA6");
+    private Map<String, String> getTestItemsFrequency() {
+        return Map.of("MLA1", "1",
+                      "MLA2", "2",
+                      "MLA3", "3",
+                      "MLA4", "4",
+                      "MLA5", "5",
+                      "MLA6", "6");
     }
 
 }

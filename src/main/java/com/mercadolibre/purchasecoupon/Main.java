@@ -36,7 +36,7 @@ public class Main {
 
         app.get("/", ctx -> ctx.status(SC_OK));
         app.post("/coupon", injector.getInstance(CouponRouter.class));
-        app.post("/coupon/stats", injector.getInstance(CouponStatsRouter.class));
+        app.get("/coupon/stats", injector.getInstance(CouponStatsRouter.class));
     }
 
     private static void addExceptionsHandling(Javalin app) {

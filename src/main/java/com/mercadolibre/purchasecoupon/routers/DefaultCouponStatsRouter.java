@@ -2,13 +2,13 @@ package com.mercadolibre.purchasecoupon.routers;
 
 import com.google.gson.Gson;
 import com.google.inject.Inject;
-import com.mercadolibre.purchasecoupon.dtos.request.CouponStatsRequest;
-import com.mercadolibre.purchasecoupon.dtos.response.CouponStatsResponse;
-import com.mercadolibre.purchasecoupon.exceptions.BadRequestException;
 import com.mercadolibre.purchasecoupon.usecases.GetTopCouponItems;
 import io.javalin.http.ContentType;
 import io.javalin.http.Context;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.Map;
 
 public class DefaultCouponStatsRouter implements CouponStatsRouter {
 
@@ -21,23 +21,10 @@ public class DefaultCouponStatsRouter implements CouponStatsRouter {
 
     @Override
     public void handle(@NotNull Context ctx) {
-        Gson gson = new Gson();
-        CouponStatsRequest couponStatsRequest = gson.fromJson(ctx.body(), CouponStatsRequest.class);
-        validateRequest(couponStatsRequest);
+        List<Map<String, Long>> response = getTopCouponItems.get();
 
-        CouponStatsResponse response = getTopCouponItems.apply(GetTopCouponItems.Model.builder()
-                .itemIds(couponStatsRequest.itemIds())
-                .top(5)
-                .build());
-
-        ctx.result(gson.toJson(response));
+        ctx.result(new Gson().toJson(response));
         ctx.contentType(ContentType.APPLICATION_JSON);
-    }
-
-    private void validateRequest(CouponStatsRequest request) {
-        if (request == null || request.itemIds() == null) {
-            throw new BadRequestException("Item ids can't be null");
-        }
     }
 
 }
