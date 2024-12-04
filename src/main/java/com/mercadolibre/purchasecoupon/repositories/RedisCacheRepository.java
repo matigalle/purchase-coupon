@@ -1,7 +1,6 @@
 package com.mercadolibre.purchasecoupon.repositories;
 
 import io.lettuce.core.RedisClient;
-import io.lettuce.core.RedisConnectionException;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
@@ -10,37 +9,37 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 
 public class RedisCacheRepository implements CacheRepository {
 
+    private static final String ITEMS_COUNTER_KEY = "items_counter";
     private static final Logger log = LoggerFactory.getLogger(RedisCacheRepository.class);
-
-    private final RedisURI uri;
-
-    public RedisCacheRepository() {
-        uri = getRedisURI();
-    }
 
     @Override
     public void incrementCounters(List<String> itemIds) {
-        RedisClient client = RedisClient.create(uri);
-        StatefulRedisConnection<String, String> connection;
-
-        try {
-            connection = client.connect();
-        } catch (RedisConnectionException e) {
-            log.error(e.toString());
-            client.shutdown();
-
-            throw e;
-        }
-
+        RedisClient client = RedisClient.create(getRedisURI());
+        StatefulRedisConnection<String, String> connection = getConnection(client);
         RedisCommands<String, String> commands = connection.sync();
 
-        itemIds.forEach(commands::incr);
+        itemIds.forEach(id -> commands.hincrby(ITEMS_COUNTER_KEY, id, 1));
 
         connection.close();
         client.shutdown();
+    }
+
+    @Override
+    public Map<String, String> getItemsFrequency() {
+        RedisClient client = RedisClient.create(getRedisURI());
+        StatefulRedisConnection<String, String> connection = getConnection(client);
+        RedisCommands<String, String> commands = connection.sync();
+
+        Map<String, String> frequencyMap = commands.hgetall(ITEMS_COUNTER_KEY);
+
+        connection.close();
+        client.shutdown();
+
+        return frequencyMap;
     }
 
     private RedisURI getRedisURI() {
@@ -49,6 +48,21 @@ public class RedisCacheRepository implements CacheRepository {
                 .withPassword("purchase-coupon-cache".toCharArray())
                 .withTimeout(Duration.ofSeconds(10))
                 .build();
+    }
+
+    private StatefulRedisConnection<String, String> getConnection(RedisClient client) {
+        StatefulRedisConnection<String, String> connection;
+
+        try {
+            connection = client.connect();
+        } catch (Exception e) {
+            log.error(e.toString());
+            client.shutdown();
+
+            throw e;
+        }
+
+        return connection;
     }
 
 }

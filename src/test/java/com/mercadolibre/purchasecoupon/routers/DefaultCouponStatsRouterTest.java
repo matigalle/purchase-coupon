@@ -1,53 +1,39 @@
 package com.mercadolibre.purchasecoupon.routers;
 
-import com.mercadolibre.purchasecoupon.dtos.response.CouponStatsResponse;
-import com.mercadolibre.purchasecoupon.exceptions.BadRequestException;
 import com.mercadolibre.purchasecoupon.usecases.GetTopCouponItems;
 import io.javalin.http.Context;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class DefaultCouponStatsRouterTest {
 
-    private static DefaultCouponStatsRouter defaultCouponStatsRouter;
+    private DefaultCouponStatsRouter defaultCouponStatsRouter;
 
-    @BeforeAll
-    static void setUp() {
+    @BeforeEach
+    void setUp() {
         GetTopCouponItems getTopCouponItems = mock(GetTopCouponItems.class);
-        CouponStatsResponse couponStatsResponse = new CouponStatsResponse(Map.of("MLA1", 2, "MLA2", 1));
-        when(getTopCouponItems.apply(any())).thenReturn(couponStatsResponse);
+        when(getTopCouponItems.get()).thenReturn(getTestTopItems());
 
         defaultCouponStatsRouter = new DefaultCouponStatsRouter(getTopCouponItems);
     }
 
     @Test
-    void response_ok() {
+    void ok_response() {
         Context context = mock(Context.class);
-        String requestBody = """
-                {
-                    "item_ids": ["MLA1", "MLA1", "MLA2"]
-                }
-                """;
-
-        when(context.body()).thenReturn(requestBody);
 
         assertDoesNotThrow(() -> defaultCouponStatsRouter.handle(context));
     }
 
-    @Test
-    void bad_request() {
-        Context context = mock(Context.class);
-        when(context.body()).thenReturn("{}");
-
-        assertThrows(BadRequestException.class, () -> defaultCouponStatsRouter.handle(context));
+    private List<Map<String, Long>> getTestTopItems() {
+        return List.of(Map.of("MLA1", 2L),
+                       Map.of("MLA2", 1L));
     }
 
 }
