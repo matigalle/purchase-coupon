@@ -12,9 +12,18 @@ Descripción completa: [Challenge Cupón.pdf](https://github.com/user-attachmen
 |-------------|-----------|
 | POST        | /coupon   |
 
-Ejemplo:
+#### Ejemplo
+Asumiendo esta lista de precios y un cupón de $500, se tendría el siguiente resultado.
 
-Request
+| Item id | Precio  |
+|---------|---------|
+| MLA1    | $100    |
+| MLA2    | $210    |
+| MLA3    | $260    |
+| MLA4    | $80     |
+| MLA5    | $90     |
+
+Request:
 ```json
 {
   "item_ids": ["MLA1", "MLA2", "MLA3", "MLA4", "MLA5"],
@@ -22,7 +31,7 @@ Request
 }
 ```
 
-Response
+Response:
 ```json
 {
   "item_ids": ["MLA1", "MLA2", "MLA4", "MLA5"],
@@ -36,19 +45,19 @@ Response
 |-------------|---------------|
 | GET         | /coupon/stats |
 
-Ejemplo:
+#### Ejemplo
 
-Response
+Response:
 ```json
 [
   {
-    "MLA1": 1
+    "MLA3": 3
   },
   {
     "MLA2": 2
   },
   {
-    "MLA3": 3
+    "MLA1": 1
   }
 ]
 ```
