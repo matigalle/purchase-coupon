@@ -1,19 +1,16 @@
-# Challenge: Cupón de compra
+# Cupón de compra
 
-API REST que permite procesar una lista de ids de items favoritos, y devolver los siguientes resultados a través de 2 servicios:
-
-1. Dado un monto que representa un cupón de compra, devuelve los items que maximizan el total gastado con dicho cupón
-2. Devuelve el top 5 de items mas repetidos y su frecuencia
-
-Para obtener el precio de un item se consulta a la API de items y se lee el valor "price":
-
-curl -X GET https://api.mercadolibre.com/items/$ITEM_ID
+API REST que permite obtener una combinación de items que maximicen el uso de un cupón de compra según su precio. Estos items representan favoritos de usuarios. Por otro lado, la API permite devolver el top 5 de items con mas favoritos.
 
 Descripción completa: [Challenge Cupón.pdf](https://github.com/user-attachments/files/17721620/Challenge.Cupon.pdf)
 
 ## Servicios
 
-1. **POST /coupon**
+1. Dado un monto y una lista de ids de items, devuelve los items que maximizan el total gastado con dicho cupón.
+
+| HTTP method | Endpoint  |
+|-------------|-----------|
+| POST        | /coupon   |
 
 Ejemplo:
 
@@ -33,35 +30,34 @@ Response
 }
 ```
 
-2. **POST /coupon/stats**
+2. Devuelve el top 5 de items con mas favoritos y su frecuencia
+
+| HTTP method | Endpoint      |
+|-------------|---------------|
+| GET         | /coupon/stats |
 
 Ejemplo:
 
-Request
-```json
-{
-  "item_ids": ["MLA1", "MLA1", "MLA2", "MLA2", "MLA3", "MLA3", "MLA4", "MLA4", "MLA5", "MLA5", "MLA6"]
-}
-```
-
 Response
 ```json
-{
-  "top_items": {
-    "MLA1": 2,
-    "MLA2": 2,
-    "MLA3": 2,
-    "MLA4": 2,
-    "MLA5": 2
+[
+  {
+    "MLA1": 1
+  },
+  {
+    "MLA2": 2
+  },
+  {
+    "MLA3": 3
   }
-}
+]
 ```
 
 ## Instrucciones para el uso de la API
 
-Es necesario tener JDK 17 instalado.
+Para usar localmente, es necesario tener JDK 17 instalado.
 
-Ejecutar localmente:
+Levantar la app:
 ```
 ./gradlew run
 ```
@@ -73,9 +69,17 @@ Ejecutar los tests:
 ./gradlew test
 ```
 
+La API se encuentra disponible en AWS con la URL:  
+
+http://purchase-coupon-app-lb-147740483.sa-east-1.elb.amazonaws.com
+
 ## Tecnologías
 
  - Java 17
  - Javalin framework
+ - Guice
+ - Gson
+ - Lettuce Redis client
  - JUnit
  - Gradle
+ - AWS
